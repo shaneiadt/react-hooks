@@ -16,10 +16,10 @@ const todo = props => {
   return (
     <React.Fragment>
       <input type="text" placeholder="Todo" onChange={inputChangedHandler} value={todoName} />
-      <button type="button" onClick={todoAddHandler} class="btn btn-outline-primary">Add</button>
+      <button type="button" onClick={todoAddHandler} className="btn btn-outline-primary">Add</button>
       <ul>
         {
-          todoList.map(todo => <li>{todo}</li>)
+          todoList.map((todo, i) => <li key={i}>{todo}</li>)
         }
       </ul>
     </React.Fragment>
