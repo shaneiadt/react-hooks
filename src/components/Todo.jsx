@@ -32,7 +32,7 @@ const todo = props => {
           for (const key in data) {
             todos.push({ id: key, name: data[key].name });
           }
-          dispatch({ type: 'SET', payload: todos.map(todo => todo.name) });
+          dispatch({ type: 'SET', payload: todos });
           setLoading({ status: false, message: '' });
         });
     } catch (error) {
@@ -61,6 +61,18 @@ const todo = props => {
     }
   }
 
+  const todoRemoveHandler = todoId => {
+    try {
+      axios.delete(`https://react-hooks-3c5da.firebaseio.com/todos/${todoId}.json`)
+        .then(res => {
+          console.log(res);
+          dispatch({ type: 'REMOVE', payload: todoId });
+        });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   if (loading.status) {
     return <p>{loading.message}</p>
   }
@@ -71,7 +83,7 @@ const todo = props => {
       <button type="button" onClick={todoAddHandler}>Add</button>
       <ul>
         {
-          todoList.map((todo, i) => <li key={i}>{todo}</li>)
+          todoList.map(todo => <li onClick={() => todoRemoveHandler(todo.id)} key={todo.id}>{todo.name}</li>)
         }
       </ul>
     </React.Fragment>
