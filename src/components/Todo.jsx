@@ -5,6 +5,7 @@ const todo = props => {
 
   const [todoName, setTodoName] = useState('');
   const [todoList, setTodoList] = useState([]);
+  const [loading, setLoading] = useState({ status: true, message: 'Loading...' });
 
   useEffect(() => {
     try {
@@ -17,6 +18,7 @@ const todo = props => {
             todos.push({ id: key, name: data[key].name });
           }
           setTodoList(todos.map(todo => todo.name));
+          setLoading({ status: false, message: '' });
         });
     } catch (error) {
       console.log(error);
@@ -32,18 +34,26 @@ const todo = props => {
 
   const todoAddHandler = async () => {
     try {
+      setLoading({ status: true, message: 'Adding Todo..' });
       setTodoList(todoList.concat(todoName));
-      const response = await axios.post('https://react-hooks-3c5da.firebaseio.com/todos.json', { name: todoName });
-      console.log(response);
+      axios.post('https://react-hooks-3c5da.firebaseio.com/todos.json', { name: todoName })
+        .then(res => {
+          setLoading({ status: false, message: '' });
+          console.log(res);
+        });
     } catch (error) {
       console.log(error);
     }
   }
 
+  if (loading.status) {
+    return <p>{loading.message}</p>
+  }
+
   return (
     <React.Fragment>
       <input type="text" placeholder="Todo" onChange={inputChangedHandler} value={todoName} />
-      <button type="button" onClick={todoAddHandler} className="btn btn-outline-primary">Add</button>
+      <button type="button" onClick={todoAddHandler}>Add</button>
       <ul>
         {
           todoList.map((todo, i) => <li key={i}>{todo}</li>)
