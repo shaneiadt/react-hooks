@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useReducer, useRef } from 'react';
 import axios from 'axios';
+import List from './List';
 
 const todo = props => {
 
@@ -89,11 +90,7 @@ const todo = props => {
     <React.Fragment>
       <input type="text" placeholder="Todo" ref={todoInputEl} />
       <button type="button" onClick={todoAddHandler}>Add</button>
-      <ul>
-        {
-          todoList.map(todo => <li onClick={() => todoRemoveHandler(todo.id)} key={todo.id}>{todo.name}</li>)
-        }
-      </ul>
+      <List todoRemoveHandler={todoRemoveHandler} todoList={todoList} />
     </React.Fragment>
   )
 }
