@@ -1,11 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import axios from 'axios';
 
 const todo = props => {
 
   const [todoName, setTodoName] = useState('');
-  const [todoList, setTodoList] = useState([]);
+  // const [todoList, setTodoList] = useState([]);
   const [loading, setLoading] = useState({ status: true, message: 'Loading...' });
+
+  const todoListReducer = (state, action) => {
+    switch (action.type) {
+      case 'ADD':
+        return state.concat(action.payload);
+      case 'SET':
+        return action.payload;
+      case 'REMOVE':
+        return state.filter((todo) => todo.id !== action.payload);
+      default:
+        return state;
+    }
+  };
+
+  const [todoList, dispatch] = useReducer(todoListReducer, []);
 
   useEffect(() => {
     try {
@@ -17,7 +32,7 @@ const todo = props => {
           for (const key in data) {
             todos.push({ id: key, name: data[key].name });
           }
-          setTodoList(todos.map(todo => todo.name));
+          dispatch({ type: 'SET', payload: todos.map(todo => todo.name) });
           setLoading({ status: false, message: '' });
         });
     } catch (error) {
@@ -35,7 +50,7 @@ const todo = props => {
   const todoAddHandler = async () => {
     try {
       setLoading({ status: true, message: 'Adding Todo..' });
-      setTodoList(todoList.concat(todoName));
+      dispatch({ type: 'ADD', payload: todoList.concat(todoName) });
       axios.post('https://react-hooks-3c5da.firebaseio.com/todos.json', { name: todoName })
         .then(res => {
           setLoading({ status: false, message: '' });
