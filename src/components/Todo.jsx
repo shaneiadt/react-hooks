@@ -20,7 +20,7 @@ const todo = props => {
     } catch (error) {
       console.log(error);
     }
-  });
+  }, []);
 
   const inputChangedHandler = (event) => {
     setTodoName(event.target.value);
