@@ -10,6 +10,7 @@ const todo = props => {
     try {
       axios.get('https://react-hooks-3c5da.firebaseio.com/todos.json')
         .then(res => {
+          console.log(res);
           const { data } = res;
           const todos = [];
           for (const key in data) {
@@ -20,7 +21,10 @@ const todo = props => {
     } catch (error) {
       console.log(error);
     }
-  }, []);
+    return () => {
+      console.log('CleanUp');
+    };
+  }, [todoName]);
 
   const inputChangedHandler = (event) => {
     setTodoName(event.target.value);
