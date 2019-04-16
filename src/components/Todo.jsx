@@ -1,13 +1,15 @@
-import React, { useState, useEffect, useReducer, useRef } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import axios from 'axios';
 import List from './List';
+import { useFormInput } from '../hooks/forms';
 
 const todo = props => {
-
+  const [inputIsValid, setInputIsValid] = useState(false);
   // const [todoName, setTodoName] = useState('');
   // const [todoList, setTodoList] = useState([]);
   const [loading, setLoading] = useState({ status: true, message: 'Loading...' });
-  const todoInputEl = useRef();
+  // const todoInputEl = useRef();
+  const todoInput = useFormInput();
 
   const todoListReducer = (state, action) => {
     switch (action.type) {
@@ -56,7 +58,7 @@ const todo = props => {
 
   const todoAddHandler = async () => {
 
-    const todoName = todoInputEl.current.value;
+    const todoName = todoInput.value;
 
     try {
       setLoading({ status: true, message: 'Adding Todo..' });
@@ -82,13 +84,21 @@ const todo = props => {
     }
   };
 
+  // const inputValidationHandler = event => {
+  //   if (event.target.value.trim() === '') {
+  //     setInputIsValid(false);
+  //   } else {
+  //     setInputIsValid(true);
+  //   }
+  // };
+
   if (loading.status) {
     return <p>{loading.message}</p>
   }
 
   return (
     <React.Fragment>
-      <input type="text" placeholder="Todo" ref={todoInputEl} />
+      <input type="text" placeholder="Todo" value={todoInput.value} onChange={todoInput.onChange} style={{ backgroundColor: todoInput.validity ? 'transparent' : 'red' }} />
       <button type="button" onClick={todoAddHandler}>Add</button>
       <List todoRemoveHandler={todoRemoveHandler} todoList={todoList} />
     </React.Fragment>
